@@ -1,0 +1,266 @@
+(defcfg
+;; You can set the value below to no if you only use the keys defined in defsrc.
+  process-unmapped-keys yes
+)
+
+(defsrc
+  q w e r t y u i o p
+  a s d f g h j k l ;
+  z x c v b n m , . /
+         spc
+)
+
+(defvar
+  streak-count 3
+  streak-time 325
+  tap-timeout 200
+  hold-timeout 300
+  chord-timeout 50
+)
+
+(deftemplate charmod (char mod)
+  (switch 
+    ((key-timing $streak-count less-than $streak-time)) $char break
+    () (tap-hold-release-timeout $tap-timeout $hold-timeout $char $mod $char reset-timeout-on-press) break
+  )
+)
+
+(deftemplate charth (char mod)
+  (tap-hold 200 200 $char $mod)
+)
+
+(defvirtualkeys
+  shift (multi (layer-switch main) lsft)
+  clear (multi (layer-switch main) (on-press release-virtualkey shift))
+)
+
+;; Colemak-DH character set mapping:
+;; QWERTY -> Colemak-DH
+;; Q -> Q, W -> W, E -> F, R -> P, T -> G, Y -> J, U -> L, I -> U, O -> Y, P -> ;
+;; A -> A, S -> R, D -> S, F -> T, G -> D, H -> H, J -> N, K -> E, L -> I, ; -> O
+;; Z -> Z, X -> X, C -> C, V -> V, B -> B, N -> M, M -> K
+
+(defchords mtl $chord-timeout
+  (w  ) w
+  (  f) f
+  (w f) esc
+)
+
+
+(defchords mtr $chord-timeout
+  (e  ) e
+  (  i) i
+  (e i) spc
+)
+
+(defchords cbsp $chord-timeout
+  (u  ) u
+  (  y) y
+  (u y) bspc
+)
+
+(defchords mbl $chord-timeout
+  (x  ) (t! charmod x lalt)
+  (  c) c
+  (x c) tab
+)
+
+(defchords mbr $chord-timeout
+  (,  ) ,
+  (  .) (t! charmod . ralt)
+  (, .) ret
+)
+
+(defalias 
+  hanguloncolmak (tap-hold 200 200 o ralt)
+  hangulonqwerty (tap-hold 200 200 ; ralt)
+  switchqwerty (tap-hold 200 200 v (layer-switch qwerty))
+  switchmain (tap-hold 200 200 b (layer-switch main))
+)
+
+(deflayermap (main)
+  ;; Colemak-DH top row - QWERTY physical keys output Colemak-DH characters
+  q q
+  w (chord mtl w)
+  e (chord mtl f)
+  r p
+  t b
+  y j
+  u l
+  i (chord cbsp u)
+  o (chord cbsp y)
+  p ;
+  
+  ;; Colemak-DH home row - maintaining hand positions for modifiers
+  a (t! charmod a lmet)
+  s (t! charmod r lalt)
+  d (t! charmod s lctl)
+  f (t! charmod t lsft)
+  g (t! charmod g (multi (layer-switch extend) (on-release tap-virtualkey clear)))
+  h m
+  j (t! charmod n rctl)
+  k (t! charmod (chord mtr e) ralt)
+  l (t! charmod (chord mtr i) rmet)
+  ; @hanguloncolmak
+  
+  ;; Colemak-DH bottom row
+  z (t! charmod z lctl) 
+  x (chord mbl x)
+  c (chord mbl c)
+  v (t! charmod d (layer-while-held fumbol))
+  b @switchqwerty
+  n (t! charmod k (layer-while-held fumbol))
+  m h
+  , (chord mbr ,)
+  . (chord mbr .)
+  / (t! charmod / rctl)
+  spc (t! charmod spc (multi (layer-switch extend) (on-release tap-virtualkey clear)))
+)
+
+
+
+(deflayermap (extend)
+  e (on-press press-virtualkey shift)
+  r (layer-switch fumbol)
+  y ins
+  u home
+  i up
+  o end
+  p pgup
+  a lmet
+  s lalt
+  d lctl
+  f lsft
+  ;; g comp
+  h '
+  j left
+  k down
+  l rght
+  ; pgdn
+  z mute
+  x vold
+  c volu
+  v pp
+  n tab
+  m bspc
+  , spc
+  . del
+  / ret
+)
+
+(defchords ftl $chord-timeout
+  (w  ) f2
+  (  e) f3
+  (w e) esc
+)
+
+(defchords ftr $chord-timeout
+  (i  ) f8
+  (  o) f9
+  (i o) bspc
+)
+
+(defchords fbl $chord-timeout
+  (x  ) (t! charmod ` ralt)
+  (  c) -
+  (x c) tab
+)
+
+(defchords fbr $chord-timeout
+  (,  ) [
+  (  .) (t! charmod ] ralt)
+  (, .) ret
+)
+
+(defchords qtr $chord-timeout
+  (i  ) i
+  (  o) o
+  (i o) bspc
+)
+
+
+(defchords qtl $chord-timeout
+  (w  ) w
+  (  e) e
+  (w e) esc
+)
+
+
+(defchords qmr $chord-timeout
+  (k  ) k
+  (  l) l
+  (k l) spc
+)
+
+(defchords qbr $chord-timeout
+  (,  ) ,
+  (.  ) .
+  (, .) ret
+)
+
+(deflayermap (qwerty)
+  q q
+  w (chord qtl w)
+  e (chord qtl e)
+  r r
+  t t
+  y y
+  u u
+  i (chord qtr i)
+  o (chord qtr o)
+  p p
+  a a
+  s s
+  d d
+  f f
+  g g
+  h h
+  j j
+  k (chord qmr k)
+  l (chord qmr l)
+  ; @hangulonqwerty
+  z z
+  x x
+  c c
+  v v
+  b @switchmain
+  n n
+  m m
+  , (chord qbr ,)
+  . (chord qbr .)
+  / /
+  spc spc
+)
+
+(deflayermap (fumbol)
+  q f1
+  w (chord ftl w)
+  e (chord ftl e)
+  r f4
+  t f5
+  y f6
+  u f7
+  i (chord ftr i)
+  o (chord ftr o)
+  p f10
+  a (t! charmod 1 lmet)
+  s (t! charmod 2 lalt)
+  d (t! charmod 3 lsft)
+  f (t! charmod 4 lctl)
+  g 5
+  h 6
+  j (t! charmod 7 rctl)
+  k (t! charmod 8 rsft)
+  l (t! charmod 9 lalt)
+  ; (t! charmod 0 rmet)
+  z (t! charmod lsgt lctl)
+  x (chord fbl x)
+  c (chord fbl c)
+  v =
+  b f11
+  n f12
+  m '
+  , (chord fbr ,)
+  . (chord fbr .)
+  / (t! charmod \ lctl)
+)
