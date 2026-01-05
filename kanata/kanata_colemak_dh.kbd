@@ -78,75 +78,7 @@
   switchmain (tap-hold 200 200 b (layer-switch main))
 )
 
-(deflayermap (main)
-  ;; Colemak-DH top row - QWERTY physical keys output Colemak-DH characters
-  q q
-  w (chord mtl w)
-  e (chord mtl f)
-  r p
-  t b
-  y j
-  u l
-  i (chord cbsp u)
-  o (chord cbsp y)
-  p ;
-  
-  ;; Colemak-DH home row - maintaining hand positions for modifiers
-  a (t! charmod a lmet)
-  s (t! charmod r lalt)
-  d (t! charmod s lctl)
-  f (t! charmod t lsft)
-  g (t! charmod g (multi (layer-switch extend) (on-release tap-virtualkey clear)))
-  h m
-  j (t! charmod n rctl)
-  k (t! charmod (chord mtr e) ralt)
-  l (t! charmod (chord mtr i) rmet)
-  ; @hanguloncolmak
-  
-  ;; Colemak-DH bottom row
-  z (t! charmod z lctl) 
-  x (chord mbl x)
-  c (chord mbl c)
-  v (t! charmod d (layer-while-held fumbol))
-  b @switchqwerty
-  n (t! charmod k (layer-while-held fumbol))
-  m h
-  , (chord mbr ,)
-  . (chord mbr .)
-  / (t! charmod / rctl)
-  spc (t! charmod spc (multi (layer-switch extend) (on-release tap-virtualkey clear)))
-)
 
-
-
-(deflayermap (extend)
-  e (on-press press-virtualkey shift)
-  r (layer-switch fumbol)
-  y ins
-  u home
-  i up
-  o end
-  p pgup
-  a lmet
-  s lalt
-  d lctl
-  f lsft
-  ;; g comp
-  h '
-  j left
-  k down
-  l rght
-  ; pgdn
-  z mute
-  x vold
-  c volu
-  v pp
-  n tab
-  m bspc
-  , spc
-  . del
-  / ret
-)
 
 (defchords ftl $chord-timeout
   (w  ) f2
@@ -211,10 +143,10 @@
   p p
   a a
   s s
-  d d
-  f f
-  g g
-  h h
+  d (t! charmod d lctl)
+  f (t! charmod f lsft)
+  g (t! charmod g (multi (layer-switch extend) (on-release tap-virtualkey clear)))
+  h (t! charmod h (multi (layer-switch extend) (on-release tap-virtualkey clear)))
   j j
   k (chord qmr k)
   l (chord qmr l)
@@ -230,6 +162,80 @@
   . (chord qbr .)
   / /
   spc spc
+)
+
+(deflayermap (symbol)
+  q esc
+  w C-5
+)
+
+(deflayermap (main)
+  ;; Colemak-DH top row - QWERTY physical keys output Colemak-DH characters
+  q q
+  w (chord mtl w)
+  e (chord mtl f)
+  r p
+  t b
+  y j
+  u l
+  i (chord cbsp u)
+  o (chord cbsp y)
+  p ;
+  
+  ;; Colemak-DH home row - maintaining hand positions for modifiers
+  a (t! charmod a lmet)
+  s (t! charmod r lalt)
+  d (t! charmod s lctl)
+  f (t! charmod t lsft)
+  g (t! charmod g (multi (layer-switch extend) (on-release tap-virtualkey clear)))
+  h m
+  j (t! charmod n rctl)
+  k (t! charmod (chord mtr e) ralt)
+  l (t! charmod (chord mtr i) rmet)
+  ; @hanguloncolmak
+  
+  ;; Colemak-DH bottom row
+  z (t! charmod z lctl) 
+  x (chord mbl x)
+  c (chord mbl c)
+  v (t! charmod d (layer-while-held fumbol))
+  b @switchqwerty
+  n (t! charmod k (layer-while-held fumbol))
+  m h
+  , (chord mbr ,)
+  . (chord mbr .)
+  / (t! charmod / rctl)
+  spc (t! charmod spc (multi (layer-switch extend) (on-release tap-virtualkey clear)))
+)
+
+
+(deflayermap (extend)
+  e (on-press press-virtualkey shift)
+  r (layer-switch fumbol)
+  y ins
+  u home
+  i up
+  o end
+  p pgup
+  a lmet
+  s lalt
+  d lctl
+  f lsft
+  ;; g comp
+  h '
+  j left
+  k down
+  l rght
+  ; pgdn
+  z mute
+  x vold
+  c volu
+  v pp
+  n tab
+  m bspc
+  , spc
+  . del
+  / ret
 )
 
 (deflayermap (fumbol)
